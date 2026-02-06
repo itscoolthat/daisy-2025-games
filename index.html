@@ -2,17 +2,17 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daisy's 2025 Game Archive</title>
     <style>
-        /* 核心复古配色 */
         :root {
-            --bg-color: #1a1c2c;      /* 深背景 */
-            --crt-bg: #29303e;        /* 屏幕背底 */
-            --text-main: #94b0c2;     /* 主体浅蓝灰 */
-            --highlight: #edeeff;     /* 亮白色 */
-            --accent: #5d275d;        /* 暗紫色点缀 */
-            --winner-color: #f4cc71;  /* 复古金/胜者色 */
-            --platform-color: #566c86; /* 平台标注色 */
+            --bg-color: #121212;      /* 极简深黑 */
+            --crt-bg: #1e2124;        /* 质朴深灰 */
+            --text-main: #a3bac3;     /* 柔和蓝灰 */
+            --highlight: #ffffff;     /* 纯白 */
+            --winner-color: #e2b04a;  /* 质朴金 */
+            --accent-green: #4ade80;  /* 终端绿 */
+            --platform-color: #5c6370; /* 灰蓝色 */
         }
 
         body {
@@ -21,142 +21,135 @@
             font-family: 'Courier New', Courier, monospace;
             display: flex;
             justify-content: center;
-            padding: 40px 20px;
+            align-items: center;
+            min-height: 100vh;
             margin: 0;
             overflow-x: hidden;
         }
 
-        /* 模拟老式游戏机外壳 */
+        /* 游戏机外框 */
         .console-frame {
-            background-color: #313639;
-            padding: 20px;
-            border-radius: 10px;
-            border-bottom: 8px solid #111;
-            box-shadow: 0 20px 0 #222;
+            background-color: #2c2c2c;
+            padding: 15px;
+            border-radius: 4px;
+            border: 2px solid #3e3e3e;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         .screen {
             background-color: var(--crt-bg);
-            width: 700px;
+            width: 720px;
             padding: 40px;
-            border: 4px solid #111;
+            border: 3px solid #111;
             position: relative;
-            box-shadow: inset 0 0 40px rgba(0,0,0,0.5);
-        }
-
-        /* 扫描线效果 */
-        .screen::after {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%),
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
-            background-size: 100% 3px, 3px 100%;
-            pointer-events: none;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
+            overflow: hidden;
         }
 
         h1 {
             color: var(--highlight);
             text-align: center;
-            font-size: 20px;
-            letter-spacing: 2px;
-            margin-bottom: 5px;
+            font-size: 18px;
+            letter-spacing: 4px;
+            margin: 0 0 5px 0;
             text-transform: uppercase;
         }
 
         .sub-title {
             text-align: center;
-            font-size: 14px;
+            font-size: 12px;
             color: var(--platform-color);
             margin-bottom: 30px;
-        }
-
-        .section {
-            margin-bottom: 25px;
-            border-left: 2px solid var(--platform-color);
-            padding-left: 15px;
+            border-bottom: 1px dashed var(--platform-color);
+            padding-bottom: 10px;
         }
 
         .section-title {
-            color: var(--winner-color);
-            font-size: 14px;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-
-        .match-group {
-            margin-bottom: 15px;
+            color: var(--accent-green);
             font-size: 13px;
-        }
-
-        .match-vs {
-            color: var(--text-main);
-            margin-bottom: 4px;
-        }
-
-        .match-winner {
-            color: var(--highlight);
+            margin: 25px 0 15px 0;
             font-weight: bold;
-            display: flex;
-            align-items: center;
         }
 
-        .match-winner::before {
-            content: "▶";
-            margin-right: 8px;
+        /* 游戏条目交互 */
+        .game-item {
+            cursor: crosshair;
+            display: inline-block;
+            transition: color 0.2s;
+            position: relative;
+            text-decoration: underline dotted var(--platform-color);
+        }
+
+        .game-item:hover {
+            color: var(--highlight);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .match-row {
+            font-size: 13px;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .winner-tag {
             color: var(--winner-color);
-            font-size: 10px;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        /* 图片预览悬浮层 */
+        #image-preview {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 220px;
+            height: 300px;
+            border: 4px solid var(--highlight);
+            background-color: #000;
+            display: none;
+            z-index: 10;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            pointer-events: none;
+            background-size: cover;
+            background-position: center;
         }
 
         .champion-box {
             margin-top: 40px;
-            border: 2px solid var(--winner-color);
+            border: 1px solid var(--winner-color);
             padding: 20px;
             text-align: center;
-            background: rgba(244, 204, 113, 0.05);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { border-color: var(--winner-color); }
-            50% { border-color: transparent; }
-            100% { border-color: var(--winner-color); }
+            position: relative;
         }
 
         .champion-title {
-            font-size: 24px;
+            font-size: 22px;
             color: var(--winner-color);
             display: block;
+            margin: 5px 0;
         }
 
         /* 像素小怪物动画 */
         .pixel-monster {
             position: absolute;
             bottom: 10px;
-            width: 20px;
-            height: 20px;
-            background-color: var(--winner-color);
+            width: 16px;
+            height: 16px;
+            background-color: var(--accent-green);
             box-shadow: 
-                4px 0 var(--winner-color), 8px 0 var(--winner-color),
+                4px 0 var(--accent-green), 8px 0 var(--accent-green),
                 4px 4px #000, 8px 4px #000,
-                0px 8px var(--winner-color), 4px 8px var(--winner-color), 8px 8px var(--winner-color), 12px 8px var(--winner-color),
-                4px 12px var(--winner-color), 8px 12px var(--winner-color);
-            animation: walk 8s linear infinite;
+                0px 8px var(--accent-green), 4px 8px var(--accent-green), 8px 8px var(--accent-green), 12px 8px var(--accent-green),
+                4px 12px var(--accent-green), 8px 12px var(--accent-green);
+            animation: walk 10s linear infinite;
         }
 
         @keyframes walk {
-            0% { left: -50px; transform: scaleX(1); }
-            45% { transform: scaleX(1); }
-            50% { left: calc(100% + 20px); transform: scaleX(-1); }
-            95% { transform: scaleX(-1); }
-            100% { left: -50px; transform: scaleX(1); }
-        }
-
-        .platform-tag {
-            color: var(--platform-color);
-            font-size: 11px;
-            margin-left: 5px;
+            0% { left: -20px; transform: scaleX(1); }
+            50% { left: 100%; transform: scaleX(1); }
+            51% { transform: scaleX(-1); }
+            100% { left: -20px; transform: scaleX(-1); }
         }
 
         .footer {
@@ -167,103 +160,93 @@
             justify-content: space-between;
         }
 
-        /* 隐藏打印按钮 */
-        .no-print {
-            position: fixed;
-            top: 20px; right: 20px;
-            z-index: 100;
+        /* 扫描线 */
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.05);
+            position: absolute;
+            animation: move 4s linear infinite;
+            pointer-events: none;
         }
-        button {
-            background: #333; color: white; border: 1px solid #555;
-            padding: 8px 12px; cursor: pointer; font-family: monospace;
+
+        @keyframes move {
+            from { top: 0; }
+            to { top: 100%; }
         }
     </style>
 </head>
 <body>
 
-<div class="no-print">
-    <button onclick="window.print()">[ SAVE AS PDF ]</button>
-</div>
-
 <div class="console-frame">
     <div class="screen">
+        <div class="scanline"></div>
         <h1>DAISY'S 2025 GAME LOG</h1>
-        <div class="sub-title">西姐 2025 年度游戏回顾：存档文件</div>
+        <div class="sub-title">西姐年度游戏存档 档案号: #2025-001</div>
 
-        <div class="section">
-            <div class="section-title">01_ [选拔赛阶段]</div>
-            <div class="match-group">
-                <div class="match-vs">勇者斗恶龙：创世小玩家 1 <span class="platform-tag">(PSV)</span> VS 勇者斗恶龙：创世小玩家 2 <span class="platform-tag">(PS5)</span></div>
-                <div class="match-winner">勇者斗恶龙：创世小玩家 1</div>
-            </div>
-            <div class="match-group">
-                <div class="match-vs">双点大学 <span class="platform-tag">(PS5)</span> VS 双人成行 <span class="platform-tag">(PS5)</span></div>
-                <div class="match-winner">双点大学</div>
-            </div>
-            <div class="match-group">
-                <div class="match-vs">塞尔达传说：风之杖 <span class="platform-tag">(Wii U)</span> VS 塞尔达传说：缩小帽 <span class="platform-tag">(GBA)</span></div>
-                <div class="match-winner">塞尔达传说：风之杖</div>
-            </div>
-            <div class="match-group">
-                <div class="match-vs">宇宙机器人 <span class="platform-tag">(PS5)</span> VS 胡闹厨房 <span class="platform-tag">(PS5)</span></div>
-                <div class="match-winner">宇宙机器人</div>
-            </div>
-            <div class="match-group">
-                <div class="match-vs">任天堂大陆 <span class="platform-tag">(Wii U)</span> VS Pok Pok Play Room <span class="platform-tag">(iOS)</span></div>
-                <div class="match-winner">任天堂大陆</div>
-            </div>
-            <div class="match-group">
-                <div class="match-vs">哈利波特：阿兹卡班的囚徒 <span class="platform-tag">(BGA)</span> VS 纪念碑谷 1 <span class="platform-tag">(iOS)</span></div>
-                <div class="match-winner">哈利波特：阿兹卡班的囚徒</div>
-            </div>
-            <div class="match-group">
-                <div class="match-vs">Lingokids <span class="platform-tag">(iOS)</span> VS 纪念碑谷 2 <span class="platform-tag">(iOS)</span></div>
-                <div class="match-winner">Lingokids</div>
-            </div>
+        <div id="image-preview"></div>
+
+        <div class="section-title">[01] 第一赛段：选拔</div>
+        <div class="match-row">
+            <span class="game-item" data-img="https://images.igdb.com/igdb/image/upload/t_cover_big/co1v9x.jpg">勇者斗恶龙：创世小玩家 1</span> (PSV) <span class="winner-tag">▶ WIN</span> <br>
+            vs 勇者斗恶龙：创世小玩家 2 (PS5)
+        </div>
+        <div class="match-row">
+            <span class="game-item" data-img="https://images.igdb.com/igdb/image/upload/t_cover_big/co492p.jpg">双点大学</span> (PS5) <span class="winner-tag">▶ WIN</span> <br>
+            vs 双人成行 (PS5)
+        </div>
+        <div class="match-row">
+            <span class="game-item" data-img="https://images.igdb.com/igdb/image/upload/t_cover_big/co1v6o.jpg">塞尔达传说：风之杖</span> (Wii U) <span class="winner-tag">▶ WIN</span> <br>
+            vs 塞尔达传说：缩小帽 (GBA)
+        </div>
+        <div class="match-row">
+            <span class="game-item" data-img="https://images.igdb.com/igdb/image/upload/t_cover_big/co8j9a.jpg">宇宙机器人</span> (PS5) <span class="winner-tag">▶ WIN</span> <br>
+            vs 胡闹厨房 (PS5)
+        </div>
+        <div class="match-row">
+            <span class="game-item" data-img="https://images.igdb.com/igdb/image/upload/t_cover_big/co1r3k.jpg">哈利波特：阿兹卡班的囚徒</span> (BGA) <span class="winner-tag">▶ WIN</span> <br>
+            vs 纪念碑谷 1 (iOS)
+        </div>
+        <div class="match-row">
+            <span class="game-item" data-img="https://play-lh.googleusercontent.com/N6M_0KIDyHwD_Xf8qI_yH3S1X9R2U5n9n9p">Lingokids</span> (iOS) <span class="winner-tag">▶ WIN</span> <br>
+            vs 纪念碑谷 2 (iOS)
         </div>
 
-        <div class="section">
-            <div class="section-title">02_ [精英赛阶段]</div>
-            <div class="match-group">
-                <div class="match-vs">勇者斗恶龙：创世小玩家 1 VS 双点大学</div>
-                <div class="match-winner">勇者斗恶龙：创世小玩家 1</div>
-            </div>
-            <div class="match-group">
-                <div class="match-vs">塞尔达传说：风之杖 VS 宇宙机器人</div>
-                <div class="match-winner">塞尔达传说：风之杖</div>
-            </div>
-            <div class="match-group">
-                <div class="match-vs">哈利波特：阿兹卡班的囚徒 VS Lingokids</div>
-                <div class="match-winner">哈利波特：阿兹卡班的囚徒</div>
-            </div>
-            <div class="match-group">
-                <div class="match-vs">任天堂大陆</div>
-                <div class="match-winner">任天堂大陆</div>
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="section-title">03_ [准决赛/决赛阶段]</div>
-            <div class="match-row">
-                <div class="match-vs">风之杖 VS 小玩家1 >> <span class="match-winner">风之杖</span></div>
-                <div class="match-vs">阿兹卡班 VS 任大陆 >> <span class="match-winner">阿兹卡班</span></div>
-            </div>
-        </div>
+        <div class="section-title">[02] 第二赛段：精英</div>
+        <div class="match-row">● <span class="winner-tag">风之杖</span> 击败了 宇宙机器人</div>
+        <div class="match-row">● <span class="winner-tag">哈利波特</span> 击败了 Lingokids</div>
 
         <div class="champion-box">
-            <span style="font-size: 10px; color: var(--text-main);">★ 2025 GOTY WINNER ★</span>
-            <span class="champion-title">塞尔达传说：风之杖</span>
-            <span style="font-size: 11px; color: var(--platform-color);">Platform: Wii U / User: Daisy</span>
+            <span style="font-size: 10px;">★ FINAL CHAMPION ★</span>
+            <span class="champion-title" class="game-item" data-img="https://images.igdb.com/igdb/image/upload/t_cover_big/co1v6o.jpg">塞尔达传说：风之杖</span>
+            <span style="font-size: 11px;">User: Daisy | System: Wii U</span>
         </div>
 
         <div class="footer">
-            <span>[ FILE_NAME: DAISY_HALL_OF_FAME ]</span>
+            <span>[ SYSTEM READY ]</span>
             <span>[ 2026.02.06 ]</span>
         </div>
 
         <div class="pixel-monster"></div>
     </div>
 </div>
+
+<script>
+    // 图片悬浮逻辑
+    const preview = document.getElementById('image-preview');
+    const gameItems = document.querySelectorAll('.game-item');
+
+    gameItems.forEach(item => {
+        item.addEventListener('mouseenter', () => {
+            const imgUrl = item.getAttribute('data-img');
+            preview.style.backgroundImage = `url('${imgUrl}')`;
+            preview.style.display = 'block';
+        });
+        item.addEventListener('mouseleave', () => {
+            preview.style.display = 'none';
+        });
+    });
+</script>
 
 </body>
 </html>
