@@ -104,14 +104,37 @@
             box-shadow: 0 0 40px rgba(0,0,0,1);
         }
 
+        /* 冠军显示区域 */
         .champion-area {
             margin-top: 40px;
             border: 2px double var(--gold);
             padding: 25px;
             text-align: center;
             background: rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        .champion-name { font-size: 26px; color: var(--gold); font-weight: bold; display: block; margin: 10px 0; }
+
+        /* 冠军封面图占位 */
+        .champion-cover {
+            width: 200px;
+            height: 280px;
+            border: 3px solid #fff;
+            margin-bottom: 15px;
+            background-color: #000;
+            background-size: cover;
+            background-position: center;
+            image-rendering: pixelated; /* 保持像素感 */
+            box-shadow: 0 0 15px rgba(226, 176, 74, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+            font-size: 10px;
+        }
+
+        .champion-name { font-size: 26px; color: var(--gold); font-weight: bold; display: block; margin: 5px 0; text-shadow: 2px 2px #000; }
 
         .monster {
             position: absolute;
@@ -166,7 +189,11 @@
         </div>
 
         <div class="champion-area">
-            <span style="font-size: 10px; color: #fff; letter-spacing: 2px;">🏆 FINAL CHAMPION 🏆</span>
+            <span style="font-size: 10px; color: #fff; letter-spacing: 2px; margin-bottom: 15px;">🏆 FINAL CHAMPION 🏆</span>
+            
+            <!-- 这里是冠军封面图位 -->
+            <img class="champion-cover" src="[在这里上传封面图路径]" alt="Daisy's No.1 Game" onerror="this.src='https://via.placeholder.com/200x280?text=COVER+IMAGE';">
+            
             <span class="champion-name">塞尔达传说：风之杖</span>
             <span style="font-size: 11px;">2025 BEST GAME FOR DAISY</span>
         </div>
